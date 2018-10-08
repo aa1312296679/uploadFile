@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="/javascripts/jquery-3.3.1.min.js"></script>
+  <style type="text/css">
+    #upload_files{
+      border: 1px solid red;
+      width: 200px;
+      height: 300px;
+    }
+  </style>
+  </head>
+  <body>
+  选择文件:<input type="file" id="upFile" />
+
+    <div id='upload_files'>
+      <input id="files" type="file" multiple>
+      <input id="uploadFiles" type="button" value="提交">
+    </div>
+  <script>
+    $("#upFile").change(function () {
+           var upFile=new FormData();
+           upFile.append("myfile",this.files[0]);
+           $.ajax({
+              url:"/fileUpload",
+              type:"post",
+              data:upFile,
+              contentType: false,
+              processData: false,
+              success:function (data) {
+                  alert("上传请求成功")
+              },
+              error:function () {
+                 alert("上传请求失败，网络异常")
+              }
+           });
+    });
+
+    $("#uploadFiles").on("click",function () {
+        var upFiles=new FormData();
+        //获取所有的上传文件
+        var Files=$("#files")[0].files;
+        if (Files.length>4){
+            alert("超出上传限制，最多只能上传4个文件");
+        }else {
+          $(Files).each(function () {
+               upFiles.append("myFiles",this);
+          });
+          $.ajax({
+                url:"/filesUpload",
+                type:"post",
+                data:upFiles,
+                contentType: false,
+                processData: false,
+                success:function (data) {
+                    alert("上传请求成功")
+                },
+                error:function () {
+                    alert("上传请求失败，网络异常")
+                }
+            });
+        }
+    });
+  </script>
+  </body>
+</html>
